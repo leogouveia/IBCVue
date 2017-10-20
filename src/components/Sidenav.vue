@@ -31,6 +31,11 @@
                         </router-link>
                     </md-list-item>
                     <md-list-item>
+                        <router-link to="/pagamentos">
+                            <md-icon>account_balance_wallet</md-icon> <span>Vaquinha</span>
+                        </router-link>
+                    </md-list-item>
+                    <md-list-item>
                         <router-link to="/transferencias">
                             <md-icon>swap_horiz</md-icon> <span>Transferências</span>
                         </router-link>

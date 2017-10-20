@@ -5,7 +5,7 @@
           <lista-movimento v-if="showMovimento"/>
         </md-tab>
         <md-tab md-label="poupança integrada" md-icon="attach_money">
-          <p>Poupança</p>
+          <lista-movimento v-if="showMovimento"/>
         </md-tab>
     </md-tabs>
   </div>
