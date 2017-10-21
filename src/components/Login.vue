@@ -1,5 +1,5 @@
 <template>
-  <div class="login__form">
+  <form class="login__form">
     <div>
       <div class="form__logo">
         <img src="../assets/caixa.png" alt="Caixa">
@@ -10,17 +10,19 @@
           <md-icon>person</md-icon>
           <label>Usuário</label>
           <md-input placeholder="" v-model="usuario" required></md-input>
+          <span class="md-warn" v-if="bUsuarioObrigatorio">Campo obrigatório</span>
         </md-input-container>
 
         <md-input-container>
           <md-icon>lock</md-icon>
           <label>Senha</label>
           <md-input type="password" placeholder="" v-model="senha" required></md-input>
+          <span class="md-warn" v-if="bSenhaObrigatoria">Campo obrigatório</span>
         </md-input-container>
 
         <div>
-          <md-radio v-model="tpConta" id="tp__conta_pf" name="my-test-group2" md-value="pf">Pessoa Física</md-radio>
-          <md-radio v-model="tpConta" id="tp__conta_pj" name="my-test-group2" md-value="pj">Pessoa Jurídica</md-radio>
+          <md-radio v-model="tpConta" id="tp__conta_pf" name="my-test-group2" md-value="PF">Pessoa Física</md-radio>
+          <md-radio v-model="tpConta" id="tp__conta_pj" name="my-test-group2" md-value="PJ">Pessoa Jurídica</md-radio>
         </div>
       </div>
 
@@ -50,8 +52,18 @@
           </md-dialog-actions>
         </md-dialog>
       </md-theme>
+
+      <md-theme md-name="default">
+        <md-dialog md-open-form="#custom" md-close-to="#custom" ref="erroLogin">
+          <md-dialog-content>Senha ou usuário incorretos</md-dialog-content>
+
+          <md-dialog-actions>
+            <md-button class="md-primary" @click="closeDialog('erroLogin')">Ok</md-button>
+          </md-dialog-actions>
+        </md-dialog>
+      </md-theme>
       
-  </div>
+  </form>
 </template>
 
 <script>
@@ -65,25 +77,37 @@ export default {
       senha: '',
       tpConta: 'PF',
       lembrarUsuario: false,
-      ibcService: undefined
+      ibcService: undefined,
+      bSenhaObrigatoria: false,
+      bUsuarioObrigatorio: false
     }
   }, 
   methods: {
     acessarConta() {
-      console.log('oi')
-      console.log(this.ibcService)
+
+      this.bUsuarioObrigatorio = (this.usuario == '') ? true : false
+      this.bSenhaObrigatoria = (this.senha == '') ? true : false
+
+      if (this.bSenhaObrigatoria || this.bUsuarioObrigatorio)
+        return
 
       if (this.lembrarUsuario) {
         localStorage.setItem('login', this.usuario)
         //localStorage.setItem('pass', this.senha)
         localStorage.setItem('tpConta', this.tpConta)
         localStorage.setItem('lembrarUsuario',this.lembrarUsuario)
+      } else {
+        localStorage.removeItem('login')
+        localStorage.removeItem('tpConta')
+        localStorage.removeItem('lembrarUsuario')
       }
       
-
-      this.ibcService.login(this.usuario, this.senha)
+      this.ibcService.login(this.usuario, this.senha, this.codSegmento)
         .then(res => {
-          this.$router.push('home')
+          if(res.data.replace(/\r?\n|\r|\t/gm, '') == '<html><body></body></html>')
+            this.$router.push('home')
+          else 
+            this.openDialog('erroLogin')
         })
         .catch(e => console.log(e))
     },
@@ -95,7 +119,12 @@ export default {
       this.$refs[ref].close()
     },
     onOpen() {
-      console.log('Open')
+      // console.log('Open')
+    }
+  },
+  computed: {
+    codSegmento() {
+      return this.tpConta === 'PF' ? 1 : 2
     }
   },
   created() {
@@ -151,6 +180,11 @@ export default {
       display: flex;
       flex-direction: column;
       margin-top: auto;
+    }
+
+    .md-warn {
+      font-weight: bold;
+      color: #ff9800;
     }
   }
 

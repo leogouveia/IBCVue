@@ -9,29 +9,10 @@ const eventBus = new Vue()
 
 const store = new Vuex.Store({
     state: {
-        counter: 0,
         isLoading: true,
-        contas: {
-            "temContasPF":true,
-            "temContasPJ":false,
-            "temContasGOV":false,
-            "segmento":1,
-            "contas":[
-                {
-                    "agencia":"3693",
-                    "tipo":"001",
-                    "chaveRecurso":"3693000100000017",
-                    "conta":"00000017-0",
-                    "nome":"CONTA SALARIO            ",
-                    "siglaConta":null,
-                    "selecionada":true,
-                    "chaveServidor":"",
-                    "cpf":"00000305617109"
-                }
-            ]
-        },
-        conta: { },
-        usuario: { },
+        contas: {},
+        conta: {},
+        usuario: {},
         saldo: {},
         movimentacaoContaCorrente: {
             saldo: {},
@@ -39,7 +20,6 @@ const store = new Vuex.Store({
             lancamentosFuturos: [],
             movimentacaoDia: [],
             informacoesChequeEspecial: {}
-
         }
     },
     getters: {
@@ -51,7 +31,20 @@ const store = new Vuex.Store({
         SET_USER: (state, payload) => {state.usuario = payload.usuario},
         SET_ACCOUNT: (state, payload) => state.conta = payload.conta,
         SET_BALANCE: (state, payload) => state.saldo = payload.saldo,
-        SET_ACCOUNT_TRANSACTIONS: (state, payload) => state.movimentacaoContaCorrente = payload
+        SET_ACCOUNT_TRANSACTIONS: (state, payload) => state.movimentacaoContaCorrente = payload,
+        RESET_DATA: (state) => {
+            state.contas = {}
+            state.conta = {}
+            state.usuario = {}
+            state.saldo = {}
+            state.movimentacaoContaCorrente = {
+                saldo: {},
+                extrato: [],
+                lancamentosFuturos: [],
+                movimentacaoDia: [],
+                informacoesChequeEspecial: {}
+            }
+        }
         
     },
     actions: {
@@ -152,12 +145,7 @@ const store = new Vuex.Store({
             commit('START_LOADING')
             Ibc.getConta().then(response => {
                 commit('SET_ACCOUNT', {conta: response})
-                //commit('STOP_LOADING')
             })
-            // axios.get('http://localhost:3000/conta').then((response) => {
-            //     commit('SET_ACCOUNT', {conta: response.data})
-            //     commit('STOP_LOADING')
-            // })
         },
         UPDATE_ACCOUNT_BALANCE: ({commit}) => {
             commit('START_LOADING')

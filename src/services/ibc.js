@@ -7,7 +7,7 @@ const ibcAxios = axios.create({
 })
 
 export default class Ibc {
-
+    
     constructor() {
         this.querystring = Querystring
         this.cookies = undefined
@@ -17,11 +17,13 @@ export default class Ibc {
         })
     }
 
-    login(user, pass) {
+    login(user, pass, segmt) {
+        
         return this.ibcAxios.get('/tpSeed?deviceKey=YAoUUggz8KebJxOyHksSYPP0y9eBLUzFcPcb%2BbVf%2Bd24LP2zicSXUsKaWEdVW1Nxc1CQyABZX2saiVu8Xrb4v3YBSc6L6t11Tp04IgnSqsRPX6f2v%2Fvcs9rveG8cWlNjrQpwilPnPO3Vuj1wq9H7KkthuLCmu4f5%2FZOCvmy%2BCqqmmO4qzocuInJwP0eg7tIgb82QZS3yTy26tgkir%2BP%2F1PTwwyM5M7oV0c5KA9EO5uY3Hm6Au%2FpjJiIg%2FULeHGovLRHV68ZwGmDAuFyUshyuannhAOB2seY19URAeEZzYxZ36rrdVR0wBDXOmM0P5USjjjq6T4fi0yhud%2BiS%2BGn1O%2BQ4IlKv5Q%3D%3D')
                 .then((response) => {
                     console.log('start login')
                     this.cookies = response.headers['set-cookie']
+                    
                     return this.ibcAxios.get('/loginTp?nocache=1489679149924&context=sinbc', {
                         headers: {
                             'Content-type': 'application/x-www-form-urlencoded'
@@ -30,7 +32,7 @@ export default class Ibc {
                 }).then((response) => {
                     let qs = this.querystring.stringify({
                         nomeUsuario: user,
-                        segmento: 1,
+                        segmento: segmt || 1,
                         userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
                     })
                     return this.ibcAxios.post('/login/authUserNameTp?nocache=1489668722708'
@@ -63,7 +65,7 @@ export default class Ibc {
                 })
     }
 
-    getExtrato() {
+    static getExtrato() {
         console.log('getExtrato')
         return axios({
             method: 'get',

@@ -36,8 +36,6 @@ export default {
           eventBus.$emit('toggleLeftSidenav')
       },
       getDados() {
-        //   this.$store.dispatch('UPDATE_USER')
-        //   this.$store.dispatch('UPDATE_ACCOUNT')
           this.$store.dispatch('UPDATE_HOME_MOVIMENTOS_DATA')
       },
       teste() {
@@ -48,6 +46,7 @@ export default {
             })
       },
       logout() {
+          this.$store.commit('RESET_DATA')
           this.$router.push('/')
       }
   },
@@ -62,9 +61,8 @@ export default {
 }
 </script>
 <style scoped>
-h2.md-title {
-    flex: 1;
-}
-
+    h2.md-title {
+        flex: 1;
+    }
 </style>
 

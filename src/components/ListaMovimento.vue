@@ -142,22 +142,14 @@ export default {
       },
       saldo() {
           return this.$store.state.saldo
-      },
-      listaExtrato() {
-          
       }
-
   },
   filters,
   mounted() {
-      //this.$store.dispatch('UPDATE_ACCOUNT_TRANSACTIONS')
   }
 }
 </script>
 <style scoped>
-    .md-table-cell {
-        /* font-size:.8em !important; */
-    }
     .negative__number {
         color: red;
     }
